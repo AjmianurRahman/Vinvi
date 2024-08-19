@@ -33,7 +33,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 24.0),
               child: Icon(
-                Icons.person,
+                Icons.Home,
                 size: 72,
                 color: Theme.of(context).colorScheme.tertiary,
               ),
