@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485471339050",
+    "project_id": "vinvi-hope",
+    "storage_bucket": "vinvi-hope.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485471339050:android:e1688d1a56d5130ec13953",
+        "android_client_info": {
+          "package_name": "com.hope.vinvi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCkKgIFIfc47JFlWgbFXJpNoQn3CbnOjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
