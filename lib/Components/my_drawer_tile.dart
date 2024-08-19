@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 /*
   DRAWER TILE
 
@@ -15,16 +14,26 @@ import 'package:flutter/material.dart';
  */
 
 class MyDrawerTile extends StatelessWidget {
-  const MyDrawerTile({super.key});
+  final String title;
+  final IconData icon;
+  final void Function()? onTap;
+
+  const MyDrawerTile(
+      {super.key, required this.title, required this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context).colorScheme;
     return ListTile(
-       title: Text('Home'),
-      leading: Icon(Icons.home_rounded),
-      onTap: (){
-
-      },
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w300, color: theme.tertiary),
+      ),
+      leading: Icon(
+        icon,
+        color: theme.tertiary,
+      ),
+      onTap: onTap,
     );
   }
 }
