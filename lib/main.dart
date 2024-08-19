@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vinvi/Pages/home_page.dart';
+import 'package:vinvi/Pages/login_page.dart';
 import 'package:vinvi/Pages/settings_page.dart';
 import 'package:vinvi/Themes/dart_mode.dart';
 import 'package:vinvi/Themes/light_mode.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
