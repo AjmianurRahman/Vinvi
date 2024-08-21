@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart.';
 import 'package:vinvi/Components/my_drawer_tile.dart';
+import 'package:vinvi/Pages/profile_page.dart';
 import 'package:vinvi/Pages/settings_page.dart';
+import 'package:vinvi/Services/Auth/auth_service.dart';
 /*
 DRAWER
 
@@ -18,10 +20,13 @@ Contains 5 menu options
  */
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+   MyDrawer({super.key});
+
 
   @override
   Widget build(BuildContext context) {
+
+    final auth = AuthService().getUid();
     var theme = Theme.of(context).colorScheme;
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -49,12 +54,19 @@ class MyDrawer extends StatelessWidget {
               MyDrawerTile(title: 'H O M E', icon: Icons.home_rounded, onTap: () {}),
 
               MyDrawerTile(title: 'P R O F I L E', icon: Icons.person_rounded, onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProfilePage()));
               }),
 
               MyDrawerTile(title: 'S E T T I N G S', icon: Icons.settings, onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const SettingsPage()));
               }),
+              Spacer(),
+              MyDrawerTile(title: 'L O G O U T', icon: Icons.logout_rounded, onTap: () {
+                Navigator.pop(context);
+                AuthService().logoutUser();
+                 }),
               //Home List tile
 
 

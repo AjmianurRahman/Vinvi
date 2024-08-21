@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:vinvi/Pages/home_page.dart';
 import 'package:vinvi/Pages/login_page.dart';
 import 'package:vinvi/Pages/settings_page.dart';
+import 'package:vinvi/Services/Auth/auth_gate.dart';
+import 'package:vinvi/Services/Database/database_provider.dart';
 import 'package:vinvi/Themes/dart_mode.dart';
 import 'package:vinvi/Themes/light_mode.dart';
 import 'package:vinvi/Themes/theme_provider.dart';
@@ -18,8 +20,12 @@ void main() async{
 
   //adding provider to notify the app theme
   runApp(
-    ChangeNotifierProvider(create: (context)=> ThemeProvider(),
-    child: const MyApp())
+    MultiProvider(providers: [
+      // theme provider
+      ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      // database provider
+      ChangeNotifierProvider(create: (context)=> DatabaseProvider())
+    ], child: MyApp())
   );
 }
 
@@ -31,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: LoginPage(),
+      home: AuthGate(),
     );
   }
 }

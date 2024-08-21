@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vinvi/Components/my_button.dart';
+import 'package:vinvi/Components/my_loading_circle.dart';
 import 'package:vinvi/Components/my_textfield.dart';
+import 'package:vinvi/Pages/register_page.dart';
+import 'package:vinvi/Services/Auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +16,38 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   var econ = TextEditingController();
   var pcon = TextEditingController();
+  var auth = AuthService();
+
+  void login() async {
+    debugPrint("+++++++++++++++++++++Entered in login");
+    //show loading circle when start.
+    showLoadingCircle(context);
+    try {
+
+      await auth.loginWithEmailAndPass(
+          econ.text.toString(), pcon.text.toString());
+      if (mounted) hideLoadingCircle(context);
+    } catch (e) {
+      if (mounted) hideLoadingCircle(context);
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+                icon: const Icon(
+                  Icons.error,
+                  size: 52,
+                ),
+                iconColor: Colors.red,
+                title: Text(
+                  "$e",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w300),
+                ),
+              ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                   size: 72,
                   color: theme.primary,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
 
                 //Welcome back message
                 Text('Welcome back! we were waiting for you',
@@ -66,26 +101,32 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () {},
                     )),
                 //signin button
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
-                MyButton(text: "L O G I N", onTap: () {}),
+                MyButton(
+                    text: "L O G I N",
+                    onTap: () {
+                      login();
+                    }),
                 //dont have an account? register now
-                SizedBox(height: 16,),
+                const SizedBox(
+                  height: 16,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Don\'t Have an account?',
+                    const Text('Don\'t have an account?',
                         style: TextStyle(
-                          color: Colors.grey,
-                            fontWeight: FontWeight.w400)),
+                            color: Colors.grey, fontWeight: FontWeight.w400)),
                     InkWell(
                       child: Text('  Register now',
-                          style: TextStyle(
-                              color: theme.primary,
-                              fontWeight: FontWeight.w500)),
-                      onTap: (){
-
+                          style: TextStyle(color: theme.primary)),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()));
                       },
                     )
                   ],

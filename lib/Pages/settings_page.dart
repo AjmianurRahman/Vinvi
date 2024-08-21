@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           //Dark mode tile
 MySettingsTile(title: "Dark Mode", action: CupertinoSwitch(
-    activeColor: theme.primary,
+    activeColor: theme.surface,
     onChanged: (bool value) {
       Provider.of<ThemeProvider>(context, listen: false)
           .toggleTheme();
