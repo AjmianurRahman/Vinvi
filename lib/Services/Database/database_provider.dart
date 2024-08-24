@@ -39,4 +39,7 @@ import 'package:vinvi/Services/Database/database_service.dart';
     // get user profile ginen uid
    Future<UserProfile?> userProfile(String uid) => db.getUserFromFirebase(uid);
 
+   // update the user bio
+    Future<void> updateBio(String bio) => db.updateUserBioInFirebase(bio);
+
   }

@@ -21,6 +21,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vinvi/Models/user.dart';
+import 'package:vinvi/Services/Auth/auth_service.dart';
 
 class DatabaseService {
   // get instances
@@ -37,8 +38,7 @@ class DatabaseService {
   */
 
   //Save user info
-  Future<void> saveUserInfoInFirebase(
-      {required String name, required String email, required String password}) async {
+  Future<void> saveUserInfoInFirebase({required String name, required String email, required String password}) async {
     // get current uid
     String uid = auth.currentUser!.uid;
     // extract username from email
@@ -54,7 +54,6 @@ class DatabaseService {
   }
 
   //Get User info
-
   Future<UserProfile?> getUserFromFirebase(String uid) async {
     try {
       // retrieve user doc from firebase
@@ -65,6 +64,19 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
       return null;
+    }
+  }
+
+  // Update user bio
+  Future<void> updateUserBioInFirebase(String bio) async{
+    print("++++++++++++++++++++++++++ $bio");
+    // get current user Id
+    String uid = AuthService().getUid();
+    // attempt to update in firebase
+    try{
+      await db.collection('Users').doc(uid).update({'bio': bio});
+    }catch(e){
+      debugPrint(e.toString());
     }
   }
 }
