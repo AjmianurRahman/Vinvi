@@ -25,7 +25,7 @@ class MyBioBox extends StatelessWidget {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: theme.secondary),
         child: Text( text.isNotEmpty ? text : 'Empty bio...',
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14),
+          style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: Colors.grey.shade700),
         ));
   }
 }

@@ -73,7 +73,7 @@ controller: controller,
           //exicute function
           onpressed!();
           controller.clear();
-        }, child: Text('Save')),
+        }, child: Text(text)),
       ],
     );
   }

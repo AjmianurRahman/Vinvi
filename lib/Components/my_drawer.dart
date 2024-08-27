@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart.';
 import 'package:vinvi/Components/my_drawer_tile.dart';
@@ -22,11 +23,10 @@ Contains 5 menu options
 class MyDrawer extends StatelessWidget {
    MyDrawer({super.key});
 
-
+   String userId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
 
-    final auth = AuthService().getUid();
     var theme = Theme.of(context).colorScheme;
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -55,7 +55,7 @@ class MyDrawer extends StatelessWidget {
 
               MyDrawerTile(title: 'P R O F I L E', icon: Icons.person_rounded, onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProfilePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage(uid:  userId)));
               }),
 
               MyDrawerTile(title: 'S E T T I N G S', icon: Icons.settings, onTap: () {

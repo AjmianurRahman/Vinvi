@@ -1,9 +1,12 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:vinvi/Models/post.dart';
 import 'package:vinvi/Models/user.dart';
 import 'package:vinvi/Services/Auth/auth_service.dart';
 import 'package:vinvi/Services/Database/database_service.dart';
 
-  /*
+/*
 
   DATABASE PROVIDER
 
@@ -22,24 +25,56 @@ import 'package:vinvi/Services/Database/database_service.dart';
 
   */
 
-  class DatabaseProvider extends ChangeNotifier{
-    /*
+class DatabaseProvider extends ChangeNotifier {
+  /*
     SERVICES
      */
 
-    // get db and auth services
-    final auth = AuthService();
-    final db = DatabaseService();
+  // get db and auth services
+  final auth = AuthService();
+  final db = DatabaseService();
 
-
-    /*
+  /*
      USER PROFILE
      */
 
-    // get user profile ginen uid
-   Future<UserProfile?> userProfile(String uid) => db.getUserFromFirebase(uid);
+  // get user profile ginen uid
+  Future<UserProfile?> userProfile(String uid) => db.getUserFromFirebase(uid);
 
-   // update the user bio
-    Future<void> updateBio(String bio) => db.updateUserBioInFirebase(bio);
+  // update the user bio
+  Future<void> updateBio(String bio) => db.updateUserBioInFirebase(bio);
 
+  /*
+    POST
+     */
+
+  // local list of posts
+  List<Post> allPosts = [];
+
+  // get posts
+  List<Post> get allposts => allposts;
+
+  //post message
+  Future<void> postMessage(String message) async {
+    await db.postMessageInFirebase(message);
+
+    // reload the data from firebase
+    await loadAllPosts();
   }
+
+  // fetch all posts
+  Future<void> loadAllPosts() async{
+    final allPosts = await db.getAllPostsFromFirebase();
+    //update to local data
+    this.allPosts =  allPosts;
+
+    notifyListeners();
+  }
+
+  // filter and return posts given uid
+  List<Post> filterUserPosts(String uid){
+    return allPosts.where((post) => post.uid == uid).toList();
+  }
+
+
+}
