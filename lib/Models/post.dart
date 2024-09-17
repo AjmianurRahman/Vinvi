@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-/*
+   /*
 
-  POST MODEL
-
+!  POST MODEL
 
    */
 class Post {

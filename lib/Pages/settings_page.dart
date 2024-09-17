@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vinvi/Components/my_settings_tile.dart';
+import 'package:vinvi/Helper/navigate_pages.dart';
+import 'package:vinvi/Services/Database/database_provider.dart';
 import 'package:vinvi/Themes/theme_provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -17,6 +19,8 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
 
+
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context).colorScheme;
@@ -24,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: theme.surface,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: theme.tertiary,weight: 1),
+        iconTheme: IconThemeData(color: theme.tertiary, weight: 1),
         title: Text(
           'S E T T I N G S',
           style: TextStyle(color: theme.tertiary, fontWeight: FontWeight.w300),
@@ -35,19 +39,32 @@ class _SettingsPageState extends State<SettingsPage> {
       body: Column(
         children: [
           //Dark mode tile
-MySettingsTile(title: "Dark Mode", action: CupertinoSwitch(
-    activeColor: theme.surface,
-    onChanged: (bool value) {
-      Provider.of<ThemeProvider>(context, listen: false)
-          .toggleTheme();
-    },
-    value: Provider.of<ThemeProvider>(context, listen: false)
-        .isDartMood))
+          MySettingsTile(
+              title: "Dark Mode",
+              action: CupertinoSwitch(
+                  activeColor: theme.surface,
+                  onChanged: (bool value) {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .toggleTheme();
+                  },
+                  value: Provider.of<ThemeProvider>(context, listen: false)
+                      .isDartMood)),
           //Block users tile
+          InkWell(
+            onTap: ()=> goToBlockedUserPage(context),
+              child: MySettingsTile(
+                  title: "Blocked Usrs",
+                  action: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: theme.tertiary,
+                    size: 38,
+                  )))
 
           //Account settings tile
         ],
       ),
     );
   }
+
+
 }

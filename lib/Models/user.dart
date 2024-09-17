@@ -1,12 +1,14 @@
-/*
- USER PROFILE
+  /*
 
- This is what every user should have for their profile
- - uid
- - name
- - email
- - bio
- - profile photo
+! USER PROFILE
+
+? This is what every user should have for their profile
+ *  uid
+ *  name
+ *  email
+ *  bio
+ *  profile photo
+
   */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +23,7 @@ class UserProfile {
     required this.password,
     required this.bio});
 
-  //firebase -> app
+  //* firebase -> app
   //convert firestore document to a user profile (so that we can use it in out app)
 
   factory UserProfile.fromDocument(DocumentSnapshot doc){
@@ -34,7 +36,7 @@ class UserProfile {
   }
 
 
- //app -> firebase
+ //*  app -> firebase
  //convert a user profile to a map(so we can store in firebase)
  Map<String, dynamic> toMap(){
     return {

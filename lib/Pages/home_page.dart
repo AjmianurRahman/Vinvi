@@ -9,10 +9,11 @@ import 'package:vinvi/Models/post.dart';
 import 'package:vinvi/Services/Auth/auth_service.dart';
 import 'package:vinvi/Services/Database/database_provider.dart';
 
-/*
-HOME PAGE
+ /*
 
-This is the main page of this app: it displays a list of all posts
+! HOME PAGE
+
+?  This is the main page of this app: it displays a list of all posts
 
  */
 
@@ -26,16 +27,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var controller = TextEditingController();
 
-  // provider
+  //* provider
 
   //this listens to any changes
   late final listiningProvider = Provider.of<DatabaseProvider>(context);
 
   // this executes the functions
-  late final databaseprovider =
-      Provider.of<DatabaseProvider>(context, listen: false);
+  late final databaseprovider = Provider.of<DatabaseProvider>(context, listen: false);
 
-  //BUILD UI
+
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     loadAllPosts();
   }
 
+  //* BUILD UI
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context).colorScheme;
@@ -72,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
       ),
 
-      body: buildPostList(listiningProvider.allPosts),
+      body: buildPostList(listiningProvider.allposts),
     );
   }
 

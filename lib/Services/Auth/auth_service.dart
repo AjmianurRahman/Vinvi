@@ -4,28 +4,28 @@ import 'package:vinvi/Components/my_loading_circle.dart';
 
 /*
 
-  AUTHENTICATION SERVICE
+!  AUTHENTICATION SERVICE
 
-  This handles everything to do with authentication in firebase
+?  This handles everything to do with authentication in firebase
   ___________________________________________________________________
 
-  - Login
-  - Register
-  - Logout
-  - Deleter account
+  * Login
+  * Register
+  * Logout
+  * Deleter account
 
  */
 
 class AuthService {
   final auth = FirebaseAuth.instance;
 
-  //get current user and UID
+  //* get current user and UID
   User? getCurrentUser() => auth.currentUser;
   String getUid() => auth.currentUser!.uid;
 
 
 
-  //login -> email and pw
+  //* login -> email and pw
   Future<UserCredential> loginWithEmailAndPass(String email, pass) async {
     try {
       final userCredential =
@@ -39,7 +39,7 @@ class AuthService {
 
 
 
-  //register -> email & pw
+  //* register -> email & pw
   Future<UserCredential> registerEmailAndPass(String email, pass) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(
@@ -52,7 +52,7 @@ class AuthService {
 
 
 
-  //logout
+  //* logout
   Future<void> logoutUser() async {
     await auth.signOut();
   }
