@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:vinvi/Components/my_loading_circle.dart';
+import 'package:vinvi/Services/Database/database_service.dart';
 
 /*
 
 !  AUTHENTICATION SERVICE
 
-?  This handles everything to do with authentication in firebase
+  This handles everything to do with authentication in firebase
   ___________________________________________________________________
 
   * Login
@@ -21,11 +22,10 @@ class AuthService {
 
   //* get current user and UID
   User? getCurrentUser() => auth.currentUser;
+
   String getUid() => auth.currentUser!.uid;
 
-
-
-  //* login -> email and pw
+  //? login -> email and pw
   Future<UserCredential> loginWithEmailAndPass(String email, pass) async {
     try {
       final userCredential =
@@ -37,9 +37,7 @@ class AuthService {
     }
   }
 
-
-
-  //* register -> email & pw
+  //? register -> email & pw
   Future<UserCredential> registerEmailAndPass(String email, pass) async {
     try {
       final userCredential = await auth.createUserWithEmailAndPassword(
@@ -50,10 +48,19 @@ class AuthService {
     }
   }
 
-
-
-  //* logout
+  //? logout
   Future<void> logoutUser() async {
     await auth.signOut();
+  }
+
+  //? Delete account
+  Future<void> deleteAccount() async {
+    User? user = getCurrentUser();
+    if (user != null) {
+      // delete user data from firestore
+      await DatabaseService().deleteUserInfoFromFirestore(user.uid);
+      // delete the user's auth record
+      await user.delete();
+    }
   }
 }

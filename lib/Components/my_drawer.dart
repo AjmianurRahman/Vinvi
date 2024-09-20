@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart.';
 import 'package:vinvi/Components/my_drawer_tile.dart';
 import 'package:vinvi/Pages/profile_page.dart';
+import 'package:vinvi/Pages/search_page.dart';
 import 'package:vinvi/Pages/settings_page.dart';
 import 'package:vinvi/Services/Auth/auth_service.dart';
 /*
@@ -57,11 +58,15 @@ class MyDrawer extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage(uid:  userId)));
               }),
-
+              MyDrawerTile(title: 'S E A R C H', icon: Icons.search_rounded, onTap: (){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const SearchPage()));
+              }),
               MyDrawerTile(title: 'S E T T I N G S', icon: Icons.settings, onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const SettingsPage()));
               }),
+
               Spacer(),
               MyDrawerTile(title: 'L O G O U T', icon: Icons.logout_rounded, onTap: () {
                 Navigator.pop(context);

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +5,6 @@ import 'package:vinvi/Models/comment.dart';
 import 'package:vinvi/Models/post.dart';
 import 'package:vinvi/Models/user.dart';
 import 'package:vinvi/Services/Auth/auth_service.dart';
-
 
 /*
 
@@ -87,6 +85,33 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  //? Delete user info from firestore
+  Future<void> deleteUserInfoFromFirestore(String uid) async {
+    WriteBatch batch = db.batch();
+    // delete user doc
+    DocumentReference userDoc = db.collection("Users").doc(uid);
+    batch.delete(userDoc);
+
+    // delete user posts
+    QuerySnapshot userPosts =
+        await db.collection('Posts').where('uid', isEqualTo: uid).get();
+    for (var post in userPosts.docs) {
+      batch.delete(post.reference);
+    }
+
+    // delete user comments
+    QuerySnapshot userComments =
+        await db.collection('Comments').where('uid', isEqualTo: uid).get();
+    for (var post in userComments.docs) {
+      batch.delete(post.reference);
+    }
+
+    //update follow and following records accordingly... (later)
+
+    // commit batch
+    await batch.commit();
   }
 
   /*!      POST MESSAGE       */
@@ -295,16 +320,99 @@ class DatabaseService {
 
   //? Get list of blocked user ids
 
-  Future<List<String>> getListOfBlockedUsers() async{
+  Future<List<String>> getListOfBlockedUsers() async {
     final currentuser = auth.currentUser!.uid;
-    try{
-      final snapshot =await db.collection("Users").doc(currentuser)
-          .collection('BlockedUsers').get();
+    try {
+      final snapshot = await db
+          .collection("Users")
+          .doc(currentuser)
+          .collection('BlockedUsers')
+          .get();
 
       return snapshot.docs.map((doc) => doc.id).toList();
-    }catch(e){
+    } catch (e) {
       return [];
     }
   }
 
+  /*!   FOLLOW & UNFOLLOW    */
+
+  //? Follow User
+
+  Future<void> followUserInFirestore(String uid) async {
+    // get current logged in user
+    final currentUid = auth.currentUser!.uid;
+
+    // add target user to current user's following
+    await db
+        .collection('Users')
+        .doc(currentUid)
+        .collection("Following")
+        .doc(uid)
+        .set({'uid': uid});
+
+    // add current user to target user's followers
+    await db
+        .collection('Users')
+        .doc(uid)
+        .collection("Followers")
+        .doc(currentUid)
+        .set({'uid': currentUid});
+  }
+
+  //? Unfollow User
+  Future<void> unfollowUserFromFirestore(String uid) async {
+    // get current logged in user
+    final currentUid = auth.currentUser!.uid;
+
+    // remove target user from current user's following
+    await db
+        .collection('Users')
+        .doc(currentUid)
+        .collection('Following')
+        .doc(uid)
+        .delete();
+
+    // remove current user from target users followers
+    await db
+        .collection('Users')
+        .doc(uid)
+        .collection('Followers')
+        .doc(currentUid)
+        .delete();
+  }
+
+  //? Get user's followers list of uids
+  Future<List<String>> getFollowerUidsFromFirestore(String uid) async{
+    // get the followers from firebase
+    final snapshot = await db.collection('Users').doc(uid).collection('Followers')
+        .get();
+
+    // return as a nice simple list of uids
+    return snapshot.docs.map((doc)=>doc.id).toList();
+  }
+
+  //? Get user's following list of uids
+  Future<List<String>> getFollowingUidsFromFirestore(String uid) async{
+    // get the following from firebase
+    final snapshot = await db.collection('Users').doc(uid).collection('Following')
+        .get();
+
+    // return as a nice simple list of uids
+    return snapshot.docs.map((doc)=>doc.id).toList();
+  }
+
+
+  //!    SEARCH PAGE    */
+Future<List<UserProfile>> searchUserInFirebase(String searchTerm) async{
+    try{
+      QuerySnapshot snapshot = await db.collection('Users')
+          .where('userName', isGreaterThanOrEqualTo: searchTerm)
+      .where('userName', isLessThanOrEqualTo: '$searchTerm\uf8ff')
+         .get();
+      return snapshot.docs.map((doc)=> UserProfile.fromDocument(doc)).toList();
+    }catch(e){
+      return [];
+    }
+}
 }

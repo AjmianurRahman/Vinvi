@@ -12,21 +12,19 @@ import 'package:vinvi/Themes/theme_provider.dart';
 
 import 'firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   //adding provider to notify the app theme
-  runApp(
-    MultiProvider(providers: [
-      // theme provider
-      ChangeNotifierProvider(create: (context) => ThemeProvider()),
-      // database provider
-      ChangeNotifierProvider(create: (context)=> DatabaseProvider())
-    ], child: MyApp())
-  );
+  runApp(MultiProvider(providers: [
+    // theme provider
+    ChangeNotifierProvider(create: (context) => ThemeProvider()),
+    // database provider
+    ChangeNotifierProvider(create: (context) => DatabaseProvider())
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -37,8 +35,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: AuthGate(),
+      initialRoute: '/',
+      routes: {'/': (context) => const AuthGate()},
     );
   }
 }
-

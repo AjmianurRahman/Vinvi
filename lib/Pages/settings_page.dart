@@ -57,8 +57,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   action: Icon(
                     Icons.arrow_forward_rounded,
                     color: theme.tertiary,
-                    size: 38,
-                  )))
+
+                  ))),
+          InkWell(
+            onTap: ()=>  goToAccountSettingsPage(context),
+            child: MySettingsTile(title: "Account Settings", action: Icon(Icons.settings_rounded, color: Theme.of(context).colorScheme.tertiary)),
+          )
 
           //Account settings tile
         ],

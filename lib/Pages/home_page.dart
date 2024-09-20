@@ -28,11 +28,7 @@ class _HomePageState extends State<HomePage> {
   var controller = TextEditingController();
 
   //* provider
-
-  //this listens to any changes
   late final listiningProvider = Provider.of<DatabaseProvider>(context);
-
-  // this executes the functions
   late final databaseprovider = Provider.of<DatabaseProvider>(context, listen: false);
 
 
@@ -44,37 +40,57 @@ class _HomePageState extends State<HomePage> {
     loadAllPosts();
   }
 
-  //* BUILD UI
+  //? BUILD UI
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context).colorScheme;
 
     //SCAFFOLD
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      drawer: MyDrawer(),
+    return DefaultTabController(
+      length: 2,
 
-      //APPBAR
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: theme.tertiary, weight: 1),
-        title: Text(
-          'H O M E',
-          style: TextStyle(color: theme.tertiary, fontWeight: FontWeight.w300),
+      //0 Scaffold
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        drawer: MyDrawer(),
+      
+        //0  APPBAR
+        appBar: AppBar(
+
+          iconTheme: IconThemeData(color: theme.tertiary, weight: 1),
+          title: Text(
+            'H O M E',
+            style: TextStyle(color: theme.tertiary, fontWeight: FontWeight.w300),
+          ),
+          centerTitle: true,
+          backgroundColor: theme.primary,
+          bottom:  TabBar(
+              dividerColor: Colors.transparent,
+              labelPadding: EdgeInsets.all(8),
+              labelColor: Theme.of(context).colorScheme.tertiary,
+              labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+              tabs: [
+                Text('For you'), Text('Following')
+              ]),
         ),
-        centerTitle: true,
-        backgroundColor: theme.primary,
+      
+        //0  FLOATING ACTION BUTTON
+        floatingActionButton: FloatingActionButton(
+          shape: CircleBorder(),
+          onPressed: () {
+            openPostMessageBox();
+          },
+          child: Icon(Icons.add),
+        ),
+      
+        //0  Body
+        body: TabBarView(
+          children: [
+            buildPostList(listiningProvider.allposts),
+            buildPostList(listiningProvider.followingPosts)
+          ],
+        ),
       ),
-
-      //FLOATING ACTION BUTTON
-      floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        onPressed: () {
-          openPostMessageBox();
-        },
-        child: Icon(Icons.add),
-      ),
-
-      body: buildPostList(listiningProvider.allposts),
     );
   }
 

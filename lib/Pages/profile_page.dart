@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vinvi/Components/my_bio_box.dart';
+import 'package:vinvi/Components/my_follow_button.dart';
 import 'package:vinvi/Components/my_input_alert_box.dart';
 import 'package:vinvi/Components/my_post_tile.dart';
+import 'package:vinvi/Components/my_profile_stats.dart';
 import 'package:vinvi/Helper/navigate_pages.dart';
 import 'package:vinvi/Models/user.dart';
+import 'package:vinvi/Pages/follow_list_page.dart';
 import 'package:vinvi/Services/Auth/auth_service.dart';
 import 'package:vinvi/Services/Database/database_provider.dart';
 
@@ -19,23 +22,27 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // provider
+  //* provider
   late final databaseProvider =
       Provider.of<DatabaseProvider>(context, listen: false);
 
-  // listening provider
+  //* listening provider
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
 
-  // user info
+  //* user info
   UserProfile? user;
   String currentUserUid = AuthService().getUid();
 
-  // loading....
+  //* loading....
   bool isLoading = true;
 
-  //Text input controler
+  //* Text input controler
   var controller = TextEditingController();
 
+  //* isFollowing
+  bool isFollwing = false;
+
+  //? Init state
   @override
   void initState() {
     // TODO: implement initState
@@ -45,13 +52,21 @@ class _ProfilePageState extends State<ProfilePage> {
     loadUser();
   }
 
+  //? Load user profile and info
   Future<void> loadUser() async {
     user = await databaseProvider.userProfile(widget.uid);
+
+    isFollwing = await databaseProvider.isFollowing(widget.uid);
+
+    await databaseProvider.loadUserFollowers(widget.uid);
+    await databaseProvider.loadUserFollowing(widget.uid);
+
     setState(() {
       isLoading = false;
     });
   }
 
+  //? Show edit box
   void showEditBioBox() {
     showDialog(
         context: context,
@@ -65,6 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ));
   }
 
+  //? Save Bio info
   Future<void> saveBio() async {
     setState(() {
       isLoading = true;
@@ -78,11 +94,25 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  //? Toggle Foollow method
+  Future<void> toggleFollow() async {
+    // unfollow
+    if (isFollwing) {
+      databaseProvider.unFollowUser(widget.uid);
+    } else {
+      databaseProvider.followUser(widget.uid);
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context).colorScheme;
-    // get all the users posts
+    //* get all the users posts
     final allUserPosts = listeningProvider.filterUserPosts(widget.uid);
+    //* listen to is following status
+    isFollwing = listeningProvider.isFollowing(widget.uid);
 
     return Scaffold(
       backgroundColor: theme.surface,
@@ -103,13 +133,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: theme.primary,
                     fontWeight: FontWeight.w500,
                     fontSize: 16))),
-        // profile picture
-        SizedBox(
+        //0 profile picture
+        const SizedBox(
           height: 8,
         ),
         Center(
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: theme.secondary),
@@ -120,11 +150,24 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
-        // profile state -> number of posts/ followers/ following
+        //0 profile state -> number of posts/ followers/ following
 
-        // follow/ unfollow button
+        MyProfileStats(
+            postCount: allUserPosts.length,
+            followerCount: listeningProvider.getFollowerCount(widget.uid),
+            followingCount: listeningProvider.getFollowingCount(widget.uid),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> FollowListPage(uid:widget.uid)));
+            }),
 
-        // user bio
+        //0 follow/ unfollow button
+        if (widget.uid != currentUserUid)
+          MyFollowButton(
+            onPressed: toggleFollow,
+            isFollowing: isFollwing,
+          ),
+
+        //0 user bio
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
@@ -134,22 +177,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 'Bio',
                 style: TextStyle(color: theme.primary, fontSize: 14),
               ),
-              InkWell(
-                  onTap: () => showEditBioBox(),
-                  child: Icon(
-                    Icons.settings,
-                    color: theme.primary,
-                  )),
+              if (widget.uid == currentUserUid)
+                InkWell(
+                    onTap: () => showEditBioBox(),
+                    child: Icon(
+                      Icons.settings,
+                      color: theme.primary,
+                    )),
             ],
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Padding(
           padding: const EdgeInsets.only(left: 25, right: 25, bottom: 4),
           child: MyBioBox(text: isLoading ? '.....' : user!.bio),
         ),
 
-        //list of posts from user
+        //0 list of posts from user
         Padding(
           padding: const EdgeInsets.only(top: 25, left: 25),
           child: Text(
